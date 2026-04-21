@@ -5,6 +5,16 @@ import path from 'path'; // ファイルパス計算用モジュール
 // 基準となるフォルダのパスを指定
 const root = './';
 
+// 非表示にする「裏方ファイル」をリストアップ
+const ignoreList = [
+  'node_modules',
+  'package.json',
+  'package-lock.json',
+  'vite.config.js',
+  'generate-index.mjs',
+  'README.md'
+];
+
 // 自然順ソートを行う関数
 function naturalSort(a, b) {
   return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
@@ -15,11 +25,11 @@ function walk(dir, depth = 0) {
   // 引数dirで指定したフォルダ内のファイル・フォルダの一覧を取得
   const allItems = fs.readdirSync(dir);
   
-  // ファイル・フォルダの一覧からnode_modulesと隠しファイルを除外
+  // ファイル・フォルダの一覧から「除外リストに含まれていない」かつ「ドットで始まらない」ものだけを採用
   const items = [];
   for (let i = 0; i < allItems.length; i++) {
     const item = allItems[i];
-    if (item !== 'node_modules' && !item.startsWith('.')) {
+    if (!ignoreList.includes(item) && !item.startsWith('.')) {
       items.push(item);
     }
   }
