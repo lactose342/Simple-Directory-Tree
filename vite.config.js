@@ -11,6 +11,10 @@ export default {
         // ファイルの追加・削除を監視
         server.watcher.on('add',    () => generateIndex());
         server.watcher.on('unlink', () => generateIndex());
+
+        // ディレクトリの追加・削除を監視
+        server.watcher.on('addDir',    () => generateIndex());
+        server.watcher.on('unlinkDir', () => generateIndex());
       },
     },
   ],
