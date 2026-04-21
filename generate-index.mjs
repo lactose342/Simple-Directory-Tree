@@ -79,8 +79,9 @@ function walk(dir, depth = 0) {
   return result;
 }
 
-// index.htmlのテンプレートを作成
-const htmlContent = `
+// 完成したHTMLをファイルとして書き出す処理
+export function generateIndex() {
+  const htmlContent = `
 <!DOCTYPE html>
 <html lang="ja">
   <head>
@@ -121,12 +122,9 @@ const htmlContent = `
 </html>
 `;
 
-// 完成したHTMLをファイルとして書き出す処理
-export function generateIndex() {
-  const html = `...`;
-  fs.writeFileSync('./index.html', html);
+  fs.writeFileSync('./index.html', htmlContent.trim());
   fs.copyFileSync('./style.css', path.join(root, 'style.css'));
 }
 
-// 直接実行でもindex.htmlを生成するようにする
+// 直接実行でもindex.htmlを生成する
 generateIndex();
