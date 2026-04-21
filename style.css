@@ -1,0 +1,141 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f8f7f4;
+  color: #1a1a18;
+  min-height: 100vh;
+  padding: 3rem 1.5rem;
+}
+
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #888780;
+  margin-bottom: 1.5rem;
+}
+
+ul {
+  list-style: none;
+}
+
+.container > ul {
+  border: 0.5px solid #d3d1c7;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+
+li > ul {
+  margin-left: 1rem;
+  border-left: 0.5px solid #d3d1c7;
+  padding-left: 0.75rem;
+  margin-top: 2px;
+  margin-bottom: 4px;
+}
+
+li {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.container > ul > li + li {
+  border-top: 0.5px solid #d3d1c7;
+}
+
+/* ---- アコーディオンボタン ---- */
+button.dir-name {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  line-height: 1;
+  color: #1a1a18;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.1s;
+}
+
+button.dir-name:hover { background: #f1efe8; }
+
+/* 矢印 */
+.arrow {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 4px 0 4px 6px;
+  border-color: transparent transparent transparent #888780;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+button.dir-name[aria-expanded="true"] .arrow {
+  transform: rotate(90deg);
+}
+
+/* フォルダアイコン */
+button.dir-name::after {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-color: #d3d1c7;
+  border-radius: 3px;
+  flex-shrink: 0;
+  clip-path: polygon(0 25%, 35% 25%, 45% 10%, 100% 10%, 100% 100%, 0 100%);
+  order: -1;
+  margin-left: 4px;
+}
+
+/* hidden で折りたたみ */
+li > ul[hidden] { display: none; }
+
+/* ---- ファイル行 ---- */
+.file-name,
+a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+  transition: background 0.1s;
+}
+
+/* ファイルアイコン共通 */
+.file-name::before,
+a.file-html::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* HTMLのファイルアイコン */
+a.file-html::before { background-color: #b5d4f4; }
+a.file-html { color: #185fa5; }
+a.file-html:hover { background: #f1efe8; color: #0c447c; }
+
+/* CSSのファイルアイコン */
+.file-name.file-css::before { background-color: #cecdfc; }
+.file-name.file-css { color: #534ab7; }
+
+/* JSのファイルアイコン */
+.file-name.file-js::before { background-color: #fac775; }
+.file-name.file-js { color: #854f0b; }
+
+.file-name { cursor: default; }
