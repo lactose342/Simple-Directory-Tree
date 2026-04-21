@@ -1,5 +1,6 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ---- 背景や文字の設定 ---- */
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: #f8f7f4;
@@ -22,10 +23,12 @@ h1 {
   margin-bottom: 1.5rem;
 }
 
+/* ---- リスト構造のデザイン ---- */
 ul {
   list-style: none;
 }
 
+/* 最も外側のリストの枠組み */
 .container > ul {
   border: 0.5px solid #d3d1c7;
   border-radius: 12px;
@@ -33,6 +36,7 @@ ul {
   overflow: hidden;
 }
 
+/* 中にあるリストのスタイル */
 li > ul {
   margin-left: 1rem;
   border-left: 0.5px solid #d3d1c7;
@@ -41,19 +45,21 @@ li > ul {
   margin-bottom: 4px;
 }
 
+/* リストの各項目のスタイル */
 li {
   display: flex;
   flex-direction: column;
   padding: 0;
 }
 
+/* リストの項目間の区切り線 */
 .container > ul > li + li {
   border-top: 0.5px solid #d3d1c7;
 }
 
-/* ---- アコーディオンボタン ---- */
+/* ---- フォルダとアコーディオンボタンのデザイン ---- */
 button.dir-name {
-  all: unset;
+  all: unset; /*  button要素のデフォルトスタイルをリセット */
   display: flex;
   align-items: center;
   gap: 8px;
@@ -68,7 +74,7 @@ button.dir-name {
 
 button.dir-name:hover { background: #f1efe8; }
 
-/* 矢印 */
+/* 矢印のデザイン */
 .arrow {
   display: inline-block;
   width: 0;
@@ -80,6 +86,7 @@ button.dir-name:hover { background: #f1efe8; }
   transition: transform 0.15s ease;
 }
 
+/* aria-expanded="true"になったら矢印を90度回す */
 button.dir-name[aria-expanded="true"] .arrow {
   transform: rotate(90deg);
 }
@@ -93,15 +100,16 @@ button.dir-name::after {
   background-color: #d3d1c7;
   border-radius: 3px;
   flex-shrink: 0;
+  /* clip-pathで多角形の座標を指定してフォルダの形に切り抜く */
   clip-path: polygon(0 25%, 35% 25%, 45% 10%, 100% 10%, 100% 100%, 0 100%);
   order: -1;
   margin-left: 4px;
 }
 
-/* hidden で折りたたみ */
+/* hiddenで折りたたみ処理 */
 li > ul[hidden] { display: none; }
 
-/* ---- ファイル行 ---- */
+/* ---- ファイルのデザイン ---- */
 .file-name,
 a {
   display: flex;
@@ -114,7 +122,7 @@ a {
   transition: background 0.1s;
 }
 
-/* ファイルアイコン共通 */
+/* ファイルアイコンの共通設定 */
 .file-name::before,
 a.file-html::before {
   content: '';
@@ -125,16 +133,16 @@ a.file-html::before {
   flex-shrink: 0;
 }
 
-/* HTMLのファイルアイコン */
+/* HTMLのファイルアイコンの設定 */
 a.file-html::before { background-color: #b5d4f4; }
 a.file-html { color: #185fa5; }
 a.file-html:hover { background: #f1efe8; color: #0c447c; }
 
-/* CSSのファイルアイコン */
+/* CSSのファイルアイコンの設定 */
 .file-name.file-css::before { background-color: #cecdfc; }
 .file-name.file-css { color: #534ab7; }
 
-/* JSのファイルアイコン */
+/* JSのファイルアイコンの設定 */
 .file-name.file-js::before { background-color: #fac775; }
 .file-name.file-js { color: #854f0b; }
 
