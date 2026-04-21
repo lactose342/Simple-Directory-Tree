@@ -121,6 +121,12 @@ const htmlContent = `
 </html>
 `;
 
-// 完成したHTMLをファイルとして書き出す
-fs.writeFileSync('./index.html', htmlContent);
-fs.copyFileSync('./style.css', path.join(root, 'style.css'));
+// 完成したHTMLをファイルとして書き出す処理
+export function generateIndex() {
+  const html = `...`;
+  fs.writeFileSync('./index.html', html);
+  fs.copyFileSync('./style.css', path.join(root, 'style.css'));
+}
+
+// 直接実行でもindex.htmlを生成するようにする
+generateIndex();
