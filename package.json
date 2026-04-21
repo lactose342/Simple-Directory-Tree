@@ -4,7 +4,7 @@
   "description": "Vite プロジェクトのルートに、ファイル一覧ページ（index.html）を自動生成するスクリプトです。",
   "main": "generate-index.mjs",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite"
   },
   "keywords": [
     "directory-tree",
