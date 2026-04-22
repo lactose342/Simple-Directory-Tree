@@ -28,7 +28,7 @@ HTML/CSS/JavaScript を教える際、これまでは VSCode 拡張の **Live Se
 
 ### セットアップ
 
-5 ファイルをプロジェクトのルートに配置します。
+4 ファイル(gitで管理するなら.gitignoreも)をプロジェクトのルートに配置します。
 
 ```
 your-project/
@@ -36,7 +36,6 @@ your-project/
 ├── vite.config.js
 ├── style.css
 ├── package.json
-├── .gitignore
 └── ...
 ```
 
