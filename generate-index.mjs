@@ -1,19 +1,24 @@
-// 必要なモジュールの読み込み
-import fs from 'fs'; // ファイルを操作用モジュール
+import fs from 'fs'; // ファイル操作用モジュール
 import path from 'path'; // ファイルパス計算用モジュール
+import { fileURLToPath } from 'url'; // ファイルのURLをパスに変換するモジュール
 
-// 基準となるフォルダのパスを指定
-const root = './';
-
-// 非表示にする「裏方ファイル」をリストアップ
-const ignoreList = [
-  'node_modules',
-  'package.json',
-  'package-lock.json',
-  'vite.config.js',
-  'generate-index.mjs',
-  'README.md'
-];
+const CONFIG = {
+  root: './',                 // 生成対象のルートフォルダ
+  outputHtml: './index.html', // 生成するHTMLファイルのパス
+  stylePath: '/style.css',    // 使用するCSSファイルのパス
+  ignoreList: [               // 非表示にする「裏方ファイル」のリスト
+    'node_modules',
+    'package.json',
+    'package-lock.json',
+    'vite.config.js',
+    'generate-index.mjs',
+    'README.md',
+  ],
+  allowedExtensions: [         // 表示するファイルの拡張子リスト
+    'html', 'css', 'js'
+  ],
+  title: 'ファイル一覧',        // 生成するHTMLのタイトル
+};
 
 // 自然順ソートを行う関数
 function naturalSort(a, b) {
@@ -26,26 +31,23 @@ function walk(dir, depth = 0) {
   const allItems = fs.readdirSync(dir);
   
   // ファイル・フォルダの一覧から「除外リストに含まれていない」かつ「ドットで始まらない」ものだけを採用
-  const items = [];
-  for (let i = 0; i < allItems.length; i++) {
-    const item = allItems[i];
-    if (!ignoreList.includes(item) && !item.startsWith('.')) {
-      items.push(item);
-    }
-  }
+  const items = allItems.filter(
+    (item) => !CONFIG.ignoreList.includes(item) && !item.startsWith('.')
+  );
 
   // フォルダとファイルに分け、それぞれ名前順に並び替える
   const dirs = [];
   const files = [];
 
-  for (let i = 0; i < items.length; i++) {
-    const name = items[i];
+  for (const name of items) {
     const fullPath = path.join(dir, name);
-    
     if (fs.statSync(fullPath).isDirectory()) {
       dirs.push(name);
     } else {
-      files.push(name);
+      const ext = path.extname(name).slice(1);
+      if (CONFIG.allowedExtensions.includes(ext)) {
+        files.push(name);
+      }
     }
   }
 
@@ -56,32 +58,31 @@ function walk(dir, depth = 0) {
   let result = (depth === 0) ? '<ul>' : '<ul hidden>';
 
   // フォルダのHTMLを作成
-  for (let i = 0; i < dirs.length; i++) {
-    const folderName = dirs[i];
+  for (const folderName of dirs) {
     const fullPath = path.join(dir, folderName);
-    
-    result += '<li class="dir">';
-    result += '  <button class="dir-name" aria-expanded="false">';
-    result += '    <span class="arrow"></span>' + folderName;
-    result += '  </button>';
-    result += walk(fullPath, depth + 1); // 再帰的にサブフォルダのHTMLを作成
-    result += '</li>';
+    result += `<li class="dir">`;
+    result += `  <button class="dir-name" aria-expanded="false">`;
+    result += `    <span class="arrow"></span>${folderName}`;
+    result += `  </button>`;
+    result += walk(fullPath, depth + 1);
+    result += `</li>`;
   }
 
   // ファイルのHTMLを作成
-  for (let i = 0; i < files.length; i++) {
-    const fileName = files[i];
+  for (const fileName of files) {
     const fullPath = path.join(dir, fileName);
 
-    const relativePath = fullPath.replace('./', '');
-    const extension = path.extname(fileName).slice(1); // 拡張子を取得
+    // Windowsの「\」を「/」に変換し、先頭の「./」を消してブラウザ用パスを作る
+    const webPath = fullPath.split(path.sep).join('/').replace(/^\.\//, '');
+    // ファイル拡張子を取得
+    const extension = path.extname(fileName).slice(1);
 
     if (extension === 'html') {
       // HTMLファイルをクリックするとそのページに飛べるようにする
-      result += '<li class="file"><a class="file-html" href="/' + relativePath + '">' + fileName + '</a></li>';
-    } else if (extension === 'css' || extension === 'js') {
+      result += `<li class="file"><a class="file-html" href="/${webPath}">${fileName}</a></li>`;
+    } else {
       // CSSやJSはファイル名だけ表示する
-      result += '<li class="file"><span class="file-name file-' + extension + '">' + fileName + '</span></li>';
+      result += `<li class="file"><span class="file-name file-${extension}">${fileName}</span></li>`;
     }
   }
 
@@ -97,13 +98,13 @@ export function generateIndex() {
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ファイル一覧</title>
-    <link rel="stylesheet" href="/style.css">
+    <title>${CONFIG.title}</title>
+    <link rel="stylesheet" href="${CONFIG.stylePath}">
   </head>
   <body>
     <div class="container">
-      <h1>ファイル一覧</h1>
-      ${walk(root)}
+      <h1>${CONFIG.title}</h1>
+      ${walk(CONFIG.root)}
     </div>
     <script>
       // フォルダ名の要素をすべて取得
@@ -130,11 +131,12 @@ export function generateIndex() {
     </script>
   </body>
 </html>
-`;
+`.trim();
 
-  fs.writeFileSync('./index.html', htmlContent.trim());
-  fs.copyFileSync('./style.css', path.join(root, 'style.css'));
+  fs.writeFileSync(CONFIG.outputHtml, htmlContent);
 }
 
-// 直接実行でもindex.htmlを生成する
-generateIndex();
+// node で直接実行したときだけの処理
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  generateIndex();
+}
